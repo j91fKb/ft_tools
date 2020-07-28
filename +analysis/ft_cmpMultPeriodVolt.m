@@ -17,7 +17,7 @@ end
 % initialize p values
 p_values = ones(n_labels, 1);
 
-% iterate through all channels
+% iterate through all labels
 for l = 1:n_labels
     fprintf('chan: %d / %d\n', [l, n_labels])
     
@@ -44,9 +44,9 @@ end
 function p_value = kruskalwallis_cmp(arr, group_map)
 p_value = 1;
 
-if all(isnan(arr), 'all')
+if all(isnan(arr), 'all') % return if all nan
     return
-else
+else % calc kruskalwallis
     p_value = kruskalwallis(arr, group_map, 'off');
 end
 end

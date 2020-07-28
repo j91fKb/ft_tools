@@ -33,6 +33,7 @@ p_values = ones(n_labels, n_freqs);
 
 % iterate through all labels and frequencies
 for l = 1:n_labels
+    % get data for the label (saves memory in parfor loop)
     label_pows = cell(1, n_fts);
     for i = 1:n_fts
         label_pows{i} = squeeze(powspctrms{i}(:, l, :, :));
@@ -48,14 +49,12 @@ for l = 1:n_labels
         
         % iterate through all blocks and append data
         for i = 1:n_fts
-            
-            if ~isempty(cfg.freq_ranges)
+            if ~isempty(cfg.freq_ranges) % calc for freq range if specified
                 selected = freqs{i} >= cfg.freq_ranges(f, 1) & freqs{i} <= cfg.freq_ranges(f, 2); % select all in specified freq range
-                x = label_pows{i}(:, selected, :); % select data
-            else
+                x = label_pows{i}(:, selected, :); 
+            else % calc for specific frequency
                 x = squeeze(label_pows{i}(:, f, :));
             end
-            
             label_data = [label_data; x(:)];
             trial_map = [trial_map; ones(length(x(:)), 1) * i];
         end
@@ -69,14 +68,15 @@ disp('Done!')
 toc
 end
 
+
 % compare arr (n x 1 array) where each row is in the group specified by
 % group_map (n x 1 array)
 function p_value = kruskalwallis_cmp(arr, group_map)
 p_value = 1;
 
-if all(isnan(arr), 'all')
+if all(isnan(arr), 'all') % return if all nan
     return
-else
+else % calc kruskalwallis
     p_value = kruskalwallis(arr, group_map, 'off');
 end
 

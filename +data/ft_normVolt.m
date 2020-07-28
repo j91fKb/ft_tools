@@ -31,6 +31,7 @@ for t = 1:n_trials
     ft_norm.trial{1} = squeeze(norm_voltage(t, :, :));
 end
 
+% add cfg information
 ft_norm.norm_info.baseline = cfg.baseline;
 
 end

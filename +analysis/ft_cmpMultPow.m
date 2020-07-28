@@ -31,8 +31,9 @@ end
 % initialize p_values
 p_values = ones(n_labels, n_freqs, n_times);
 
-% iterate through all channels and frequencies
+% iterate through all labels and frequencies
 for l = 1:n_labels
+    % get data for the label (saves memory in parfor loop)
     label_pows = cell(1, n_fts);
     for i = 1:n_fts
         label_pows{i} = squeeze(powspctrms{i}(:, l, :, :));
@@ -48,12 +49,11 @@ for l = 1:n_labels
         
         % iterate through all fts and append data
         for i = 1:n_fts
-            
-            if ~isempty(cfg.freq_ranges)
+            if ~isempty(cfg.freq_ranges) % calc for freq range if specified
                 selected = freqs{i} >= cfg.freq_ranges(f, 1) & freqs{i} <= cfg.freq_ranges(f, 2); % select all in specified freq range
                 x = label_pows{i}(:, selected, :); % select data
                 x = reshape(x, [size(x, 1) * sum(selected), n_times]);
-            else
+            else % calc for specific frequency
                 x = squeeze(label_pows{i}(:, f, :));
             end
             

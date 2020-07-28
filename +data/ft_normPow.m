@@ -20,9 +20,10 @@ is_baseline = ft_baseline.time >= cfg.baseline(1) & ft_baseline.time <= cfg.base
 correction = repmat(nanmean(ft_baseline.powspctrm(:, :, :, is_baseline), [1 4]), ...
     [n_trials, 1, 1, n_times]);
 
-% calculated normalized power
+% calculated normalized power and update ft_norm
 ft_norm.powspctrm = ft.powspctrm ./ correction;
 
+% add cfg information
 ft_norm.norm_info.baseline = cfg.baseline;
 
 end

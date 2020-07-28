@@ -23,7 +23,7 @@ end
 % initialize p values
 p_values = ones(n_labels, n_times);
 
-% iterate through all channels
+% iterate through all labels
 for l = 1:n_labels
     fprintf('chan: %d / %d\n', [l, n_labels])
     
