@@ -28,7 +28,7 @@ norm_voltage = (voltage - correction_mean) ./ correction_std;
 
 % update ft_norm with normalized voltage
 for t = 1:n_trials
-    ft_norm.trial{1} = squeeze(norm_voltage(t, :, :));
+    ft_norm.trial{t} = squeeze(norm_voltage(t, :, :));
 end
 
 % add cfg information

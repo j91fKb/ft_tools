@@ -1,7 +1,7 @@
 % Checks if there is a difference between fts for each timepoint.
 % Args:
 %     - ft: 1 x n cell array where each item is an ft struct
-function p_values = ft_cmpMultVolt(fts)
+function p_values = ft_cmpMultVolt(cfg, fts)
 tic
 
 % get some size info from the data

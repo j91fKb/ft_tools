@@ -1,31 +1,23 @@
-function figs = ft_plotErp(cfg, ft)
+function figs = ft_plotErp(cfg, data)
 
-cfg_default.n = size(ft.avg, 1);
+cfg_default.n = size(data.ft.label, 1);
 cfg_default.rows = 5;
 cfg_default.cols = 5;
 cfg_default.xlabel = 'time (seconds)';
-cfg_default.ylabel = 'voltage (mV)';
-cfg_default.select = @subplot_select;
+cfg_default.ylabel = 'voltage (zscore)';
 cfg_default.plot = @subplot_plot;
 cfg = ft_tools.utils.combine_cfgs(cfg_default, cfg);
 
-figs = ft_tools.visualization.make_subplots(cfg, ft);
+figs = ft_tools.visualization.make_subplots(cfg, data);
 
 end
 
 
-function subplot_data = subplot_select(ft, i)
-cfg = struct();
-cfg.channel = ft.label(i);
-subplot_data = ft_selectdata(cfg, ft);
-end
+function subplot_plot(cfg, ft, i)
+var = sqrt(ft.var(i, :)) ./ sqrt(ft.dof(i, :));
+shadedErrorBar(ft.time, ft.avg(i, :), var, 'lineprops', {'-b'});
 
-
-function subplot_plot(cfg, ft, ~)
-var = sqrt(ft.var(1, :)) ./ sqrt(ft.dof(1, :));
-shadedErrorBar(ft.time, ft.avg, var, 'lineprops', {'-b'});
-
-title(replace(ft.label{1}, '_', '-'))
+title(replace(ft.label{i}, '_', '-'))
 if isfield(cfg, 'xdim')
     xlim(cfg.xdim)
 end

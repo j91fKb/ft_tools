@@ -15,6 +15,7 @@ cfg = ft_tools.utils.combine_cfgs(cfg_default, cfg);
 % store some return info
 misc = struct();
 misc.freq_ranges = cfg.freq_ranges;
+misc.baseline = cfg.baseline;
 
 % use ft as ft_baseline if it is not passed in
 if nargin == 2
@@ -47,11 +48,11 @@ for l = 1:n_labels
         fprintf('label: %d / %d, freq: %d / %d\n', [l, n_labels, f, n_freqs])
         
         if ~isempty(cfg.freq_ranges) % calc for freq range if specified
-            selected = freq >= cfg.freq_ranges(f, 1) & freq <= cfg.freq_ranges(f, 2); % select all in specified freq range
-            sel_pow = squeeze(nanmean(label_pow(:, selected, :), 2));
-            sel_baseline = nanmean(label_baseline(:, selected, is_baseline), 2);
+            selected = freq >= cfg.freq_ranges(f, 1) & freq < cfg.freq_ranges(f, 2); % select all in specified freq range
+            sel_pow = label_pow(:, selected, :);
+            sel_baseline = label_baseline(:, selected, is_baseline);
         else % calc for specific frequency
-            sel_pow = squeeze(label_pow(:, f, :));
+            sel_pow = label_pow(:, f, :);
             sel_baseline = label_baseline(:, f, is_baseline);
         end
         
@@ -64,9 +65,9 @@ toc
 end
 
 
-% compare mat (n x t matrix) to arr (n x 1 array) using ranksum
+% compare mat (n x m x t matrix) to arr (n x 1 array) using ranksum
 function p_values = ranksum_cmp(mat, arr)
-n = size(mat, 2);
+n = size(mat, 3);
 
 % allocate p_values with ones
 p_values = ones(1, n);
@@ -78,10 +79,11 @@ end
 
 % iterate through second dimension of mat
 for i = 1:n
-    if all(isnan(mat(:, i)), 'all') % 1 if all nan
+    if all(isnan(mat(:, :, i)), 'all') % 1 if all nan
         p = 1;
     else % calc ranksum of column in mat and arr
-        p = ranksum(mat(:, i), arr);
+        x = mat(:, :, i);
+        p = ranksum(x(:), arr);
     end
     p_values(i) = p;
 end

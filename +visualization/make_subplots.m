@@ -5,11 +5,11 @@ cfg_default.rows = 4;
 cfg_default.cols = 4;
 cfg_default.show_labels = true;
 cfg_default.title = '';
-cfg_default.title_position = [.5 .97 .5 .02];
+cfg_default.title_position = [.4 .97 .5 .02];
 cfg_default.xlabel = '';
-cfg_default.xlabel_position = [.5 .03 .5 .02];
+cfg_default.xlabel_position = [.4 .03 .5 .02];
 cfg_default.ylabel = '';
-cfg_default.ylabel_position = [.02 .5 .5 .02];
+cfg_default.ylabel_position = [.02 .4 .5 .02];
 cfg_default.position = [0 0 1500 1000];
 cfg = ft_tools.utils.combine_cfgs(cfg_default, cfg);
 
@@ -33,7 +33,7 @@ for i = 1:cfg.n
         
         % set x and y axis names
         if cfg.show_labels
-            annotation('textbox', 'String', cfg.title,...
+            annotation('textbox', 'String', replace(cfg.title, '_', '-'),...
                 'Position', cfg.title_position,...
                 'EdgeColor', 'none');
             annotation('textarrow', 'String', cfg.ylabel,...
@@ -52,8 +52,7 @@ for i = 1:cfg.n
         s = rows * cols;
     end
     subplot(rows, cols, s)
-    subplot_data = cfg.select(data, i);
-    cfg.plot(cfg, subplot_data, i)
+    cfg.plot(cfg, data, i)
     
 end
 
